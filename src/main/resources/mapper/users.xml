@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于小区业主表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.boot.dao.UsersDAO">
+	<resultMap type="users" id="usersMap">
+		<id property="usersid" column="usersid" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="realname" column="realname" />
+		<result property="sex" column="sex" />
+		<result property="birthday" column="birthday" />
+		<result property="buildsid" column="buildsid" />
+		<result property="address" column="address" />
+		<result property="contact" column="contact" />
+		<result property="addtime" column="addtime" />
+		<result property="memo" column="memo" />
+		<result property="buildsname" column="buildsname" />
+		<!-- 通过外键关联查询  返回封装Builds对象 -->
+		<association property="builds" column="buildsid" select="com.boot.dao.BuildsDAO.getBuildsById" javaType="com.boot.entity.Builds" />
+	</resultMap>
+
+	<!-- 小区业主表 插入SQL语句  UsersDAO通过ID(insertUsers)调用此配置 -->
+	<insert id="insertUsers" parameterType="users">  
+		insert into users(usersid  , username  , password  , realname  , sex  , birthday  , buildsid  , address  , contact  , addtime  , memo ) values(#{usersid}  , #{username}   , #{password}   , #{realname}   , #{sex}   , #{birthday}   , #{buildsid}   , #{address}   , #{contact}   , #{addtime}   , #{memo} )
+	</insert>
+
+	<!-- 小区业主表 更新SQL语句  UsersDAO通过ID(updateUsers)调用此配置 -->
+	<update id="updateUsers" parameterType="users">
+		update users set  username=#{username}  , password=#{password}  , realname=#{realname}  , sex=#{sex}  , birthday=#{birthday}  , buildsid=#{buildsid}  , address=#{address}  , contact=#{contact}  , addtime=#{addtime}  , memo=#{memo}  where usersid=#{usersid}
+	</update>
+
+	<!-- 小区业主表 按主键删除SQL语句  UsersDAO通过ID(deleteUsers)调用此配置 -->
+	<delete id="deleteUsers" parameterType="String">
+		delete from users where usersid = #{usersid}
+	</delete>
+
+	<!-- 小区业主表 查询全部小区业主信息SQL语句  UsersDAO通过ID(getAllUsers)调用此配置  -->
+	<select id="getAllUsers" resultMap="usersMap">
+		select a.* , b.buildsname  from users a , builds b  where 1=1 and a.buildsid = b.buildsid  order by usersid desc
+	</select>
+
+	<!-- 小区业主表 按主键(usersid)查询SQL语句 UsersDAO通过ID(getUsersById)调用此配置  -->
+	<select id="getUsersById" parameterType="String" resultMap="usersMap">
+		select a.* , b.buildsname  from users a , builds b  where 1=1 and a.buildsid = b.buildsid and usersid=#{usersid} order by usersid desc
+	</select>
+
+	<!-- 小区业主表 按条件精确查询SQL语句 UsersDAO通过ID(getUsersByCond)调用此配置  -->
+	<select id="getUsersByCond" parameterType="users" resultMap="usersMap">
+		select a.* , b.buildsname  from users a , builds b  where 1=1 and a.buildsid = b.buildsid 
+		<if test="username != null and '' != username">
+			and a.username = #{username}  
+		</if>
+		<if test="password != null and '' != password">
+			and a.password = #{password}  
+		</if>
+		<if test="realname != null and '' != realname">
+			and a.realname = #{realname}  
+		</if>
+		<if test="sex != null and '' != sex">
+			and a.sex = #{sex}  
+		</if>
+		<if test="birthday != null and '' != birthday">
+			and a.birthday = #{birthday}  
+		</if>
+		<if test="buildsid != null and '' != buildsid">
+			and a.buildsid = #{buildsid}  
+		</if>
+		<if test="address != null and '' != address">
+			and a.address = #{address}  
+		</if>
+		<if test="contact != null and '' != contact">
+			and a.contact = #{contact}  
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}  
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}  
+		</if>
+	</select>
+
+	<!-- 小区业主表 按条件模糊查询SQL语句 UsersDAO通过ID(getUsersByLike)调用此配置  -->
+	<select id="getUsersByLike" parameterType="users" resultMap="usersMap">
+		select a.* , b.buildsname  from users a , builds b  where 1=1 and a.buildsid = b.buildsid 
+		<if test="username != null and '' != username">
+			and a.username like CONCAT('%', CONCAT(#{username}, '%'))
+		</if>
+		<if test="password != null and '' != password">
+			and a.password like CONCAT('%', CONCAT(#{password}, '%'))
+		</if>
+		<if test="realname != null and '' != realname">
+			and a.realname like CONCAT('%', CONCAT(#{realname}, '%'))
+		</if>
+		<if test="sex != null and '' != sex">
+			and a.sex like CONCAT('%', CONCAT(#{sex}, '%'))
+		</if>
+		<if test="birthday != null and '' != birthday">
+			and a.birthday like CONCAT('%', CONCAT(#{birthday}, '%'))
+		</if>
+		<if test="buildsid != null and '' != buildsid">
+			and b.buildsname like CONCAT('%', CONCAT(#{buildsid}, '%'))
+		</if>
+		<if test="address != null and '' != address">
+			and a.address like CONCAT('%', CONCAT(#{address}, '%'))
+		</if>
+		<if test="contact != null and '' != contact">
+			and a.contact like CONCAT('%', CONCAT(#{contact}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

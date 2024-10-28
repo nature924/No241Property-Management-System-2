@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于楼栋表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.boot.dao.BuildsDAO">
+	<resultMap type="builds" id="buildsMap">
+		<id property="buildsid" column="buildsid" />
+		<result property="buildsname" column="buildsname" />
+		<result property="address" column="address" />
+		<result property="num" column="num" />
+		<result property="floor" column="floor" />
+		<result property="manager" column="manager" />
+		<result property="contact" column="contact" />
+		<result property="memo" column="memo" />
+	</resultMap>
+
+	<!-- 楼栋表 插入SQL语句  BuildsDAO通过ID(insertBuilds)调用此配置 -->
+	<insert id="insertBuilds" parameterType="builds">  
+		insert into builds(buildsid  , buildsname  , address  , num  , floor  , manager  , contact  , memo ) values(#{buildsid}  , #{buildsname}   , #{address}   , #{num}   , #{floor}   , #{manager}   , #{contact}   , #{memo} )
+	</insert>
+
+	<!-- 楼栋表 更新SQL语句  BuildsDAO通过ID(updateBuilds)调用此配置 -->
+	<update id="updateBuilds" parameterType="builds">
+		update builds set  buildsname=#{buildsname}  , address=#{address}  , num=#{num}  , floor=#{floor}  , manager=#{manager}  , contact=#{contact}  , memo=#{memo}  where buildsid=#{buildsid}
+	</update>
+
+	<!-- 楼栋表 按主键删除SQL语句  BuildsDAO通过ID(deleteBuilds)调用此配置 -->
+	<delete id="deleteBuilds" parameterType="String">
+		delete from builds where buildsid = #{buildsid}
+	</delete>
+
+	<!-- 楼栋表 查询全部楼栋信息SQL语句  BuildsDAO通过ID(getAllBuilds)调用此配置  -->
+	<select id="getAllBuilds" resultMap="buildsMap">
+		select a.*  from builds a  where 1=1  order by buildsid desc
+	</select>
+
+	<!-- 楼栋表 按主键(buildsid)查询SQL语句 BuildsDAO通过ID(getBuildsById)调用此配置  -->
+	<select id="getBuildsById" parameterType="String" resultMap="buildsMap">
+		select a.*  from builds a  where 1=1 and buildsid=#{buildsid} order by buildsid desc
+	</select>
+
+	<!-- 楼栋表 按条件精确查询SQL语句 BuildsDAO通过ID(getBuildsByCond)调用此配置  -->
+	<select id="getBuildsByCond" parameterType="builds" resultMap="buildsMap">
+		select a.*  from builds a  where 1=1 
+		<if test="buildsname != null and '' != buildsname">
+			and a.buildsname = #{buildsname}  
+		</if>
+		<if test="address != null and '' != address">
+			and a.address = #{address}  
+		</if>
+		<if test="num != null and '' != num">
+			and a.num = #{num}  
+		</if>
+		<if test="floor != null and '' != floor">
+			and a.floor = #{floor}  
+		</if>
+		<if test="manager != null and '' != manager">
+			and a.manager = #{manager}  
+		</if>
+		<if test="contact != null and '' != contact">
+			and a.contact = #{contact}  
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}  
+		</if>
+	</select>
+
+	<!-- 楼栋表 按条件模糊查询SQL语句 BuildsDAO通过ID(getBuildsByLike)调用此配置  -->
+	<select id="getBuildsByLike" parameterType="builds" resultMap="buildsMap">
+		select a.*  from builds a  where 1=1 
+		<if test="buildsname != null and '' != buildsname">
+			and a.buildsname like CONCAT('%', CONCAT(#{buildsname}, '%'))
+		</if>
+		<if test="address != null and '' != address">
+			and a.address like CONCAT('%', CONCAT(#{address}, '%'))
+		</if>
+		<if test="num != null and '' != num">
+			and a.num like CONCAT('%', CONCAT(#{num}, '%'))
+		</if>
+		<if test="floor != null and '' != floor">
+			and a.floor like CONCAT('%', CONCAT(#{floor}, '%'))
+		</if>
+		<if test="manager != null and '' != manager">
+			and a.manager like CONCAT('%', CONCAT(#{manager}, '%'))
+		</if>
+		<if test="contact != null and '' != contact">
+			and a.contact like CONCAT('%', CONCAT(#{contact}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

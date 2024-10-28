@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于网站内容表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.boot.dao.ArticleDAO">
+	<resultMap type="article" id="articleMap">
+		<id property="articleid" column="articleid" />
+		<result property="title" column="title" />
+		<result property="bannerid" column="bannerid" />
+		<result property="image" column="image" />
+		<result property="istop" column="istop" />
+		<result property="isflv" column="isflv" />
+		<result property="contents" column="contents" />
+		<result property="addtime" column="addtime" />
+		<result property="hits" column="hits" />
+		<result property="bannername" column="bannername" />
+		<!-- 通过外键关联查询  返回封装Banner对象 -->
+		<association property="banner" column="bannerid" select="com.boot.dao.BannerDAO.getBannerById" javaType="com.boot.entity.Banner" />
+	</resultMap>
+
+	<!-- 网站内容表 插入SQL语句  ArticleDAO通过ID(insertArticle)调用此配置 -->
+	<insert id="insertArticle" parameterType="article">  
+		insert into article(articleid  , title  , bannerid  , image  , istop  , isflv  , contents  , addtime  , hits ) values(#{articleid}  , #{title}   , #{bannerid}   , #{image}   , #{istop}   , #{isflv}   , #{contents}   , #{addtime}   , #{hits} )
+	</insert>
+
+	<!-- 网站内容表 更新SQL语句  ArticleDAO通过ID(updateArticle)调用此配置 -->
+	<update id="updateArticle" parameterType="article">
+		update article set  title=#{title}  , bannerid=#{bannerid}  , image=#{image}  , istop=#{istop}  , isflv=#{isflv}  , contents=#{contents}  , addtime=#{addtime}  , hits=#{hits}  where articleid=#{articleid}
+	</update>
+
+	<!-- 网站内容表 按主键删除SQL语句  ArticleDAO通过ID(deleteArticle)调用此配置 -->
+	<delete id="deleteArticle" parameterType="String">
+		delete from article where articleid = #{articleid}
+	</delete>
+
+	<!-- 网站内容表 查询全部网站内容信息SQL语句  ArticleDAO通过ID(getAllArticle)调用此配置  -->
+	<select id="getAllArticle" resultMap="articleMap">
+		select a.* , b.bannername  from article a , banner b  where 1=1 and a.bannerid = b.bannerid  order by articleid desc
+	</select>
+	
+	<select id="getFlvArticle" resultMap="articleMap">
+		select a.* , b.bannername
+		from article a , banner b where a.bannerid = b.bannerid and isflv =
+		'是' order by
+		articleid
+		desc limit 7
+	</select>
+	
+	<select id="getTopArticle" resultMap="articleMap">
+		select a.* , b.bannername
+		from article a , banner b where a.bannerid = b.bannerid and istop =
+		'是' order by
+		articleid
+		desc limit 7
+	</select>
+	
+	<select id="getArticleByBanner" parameterType="String" resultMap="articleMap">
+		select a.* , b.bannername from article a , banner b where
+		a.bannerid =
+		b.bannerid and
+		a.bannerid = #{bannerid} order by
+		articleid
+		desc limit 7
+	</select>
+
+	<!-- 网站内容表 按主键(articleid)查询SQL语句 ArticleDAO通过ID(getArticleById)调用此配置  -->
+	<select id="getArticleById" parameterType="String" resultMap="articleMap">
+		select a.* , b.bannername  from article a , banner b  where 1=1 and a.bannerid = b.bannerid and articleid=#{articleid} order by articleid desc
+	</select>
+
+	<!-- 网站内容表 按条件精确查询SQL语句 ArticleDAO通过ID(getArticleByCond)调用此配置  -->
+	<select id="getArticleByCond" parameterType="article" resultMap="articleMap">
+		select a.* , b.bannername  from article a , banner b  where 1=1 and a.bannerid = b.bannerid 
+		<if test="title != null and '' != title">
+			and a.title = #{title}  
+		</if>
+		<if test="bannerid != null and '' != bannerid">
+			and a.bannerid = #{bannerid}  
+		</if>
+		<if test="image != null and '' != image">
+			and a.image = #{image}  
+		</if>
+		<if test="istop != null and '' != istop">
+			and a.istop = #{istop}  
+		</if>
+		<if test="isflv != null and '' != isflv">
+			and a.isflv = #{isflv}  
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents = #{contents}  
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}  
+		</if>
+		<if test="hits != null and '' != hits">
+			and a.hits = #{hits}  
+		</if>
+	</select>
+
+	<!-- 网站内容表 按条件模糊查询SQL语句 ArticleDAO通过ID(getArticleByLike)调用此配置  -->
+	<select id="getArticleByLike" parameterType="article" resultMap="articleMap">
+		select a.* , b.bannername  from article a , banner b  where 1=1 and a.bannerid = b.bannerid 
+		<if test="title != null and '' != title">
+			and a.title like CONCAT('%', CONCAT(#{title}, '%'))
+		</if>
+		<if test="bannerid != null and '' != bannerid">
+			and b.bannername like CONCAT('%', CONCAT(#{bannerid}, '%'))
+		</if>
+		<if test="image != null and '' != image">
+			and a.image like CONCAT('%', CONCAT(#{image}, '%'))
+		</if>
+		<if test="istop != null and '' != istop">
+			and a.istop like CONCAT('%', CONCAT(#{istop}, '%'))
+		</if>
+		<if test="isflv != null and '' != isflv">
+			and a.isflv like CONCAT('%', CONCAT(#{isflv}, '%'))
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents like CONCAT('%', CONCAT(#{contents}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="hits != null and '' != hits">
+			and a.hits like CONCAT('%', CONCAT(#{hits}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

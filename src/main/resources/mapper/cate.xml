@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于收费类型表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.boot.dao.CateDAO">
+	<resultMap type="cate" id="cateMap">
+		<id property="cateid" column="cateid" />
+		<result property="catename" column="catename" />
+		<result property="addtime" column="addtime" />
+		<result property="memo" column="memo" />
+	</resultMap>
+
+	<!-- 收费类型表 插入SQL语句  CateDAO通过ID(insertCate)调用此配置 -->
+	<insert id="insertCate" parameterType="cate">  
+		insert into cate(cateid  , catename  , addtime  , memo ) values(#{cateid}  , #{catename}   , #{addtime}   , #{memo} )
+	</insert>
+
+	<!-- 收费类型表 更新SQL语句  CateDAO通过ID(updateCate)调用此配置 -->
+	<update id="updateCate" parameterType="cate">
+		update cate set  catename=#{catename}  , addtime=#{addtime}  , memo=#{memo}  where cateid=#{cateid}
+	</update>
+
+	<!-- 收费类型表 按主键删除SQL语句  CateDAO通过ID(deleteCate)调用此配置 -->
+	<delete id="deleteCate" parameterType="String">
+		delete from cate where cateid = #{cateid}
+	</delete>
+
+	<!-- 收费类型表 查询全部收费类型信息SQL语句  CateDAO通过ID(getAllCate)调用此配置  -->
+	<select id="getAllCate" resultMap="cateMap">
+		select a.*  from cate a  where 1=1  order by cateid desc
+	</select>
+
+	<!-- 收费类型表 查询首页显示信息 CateDAO通过ID(getCateFront)调用此配置   -->
+	<select id="getCateFront" resultMap="cateMap">
+		select a.* from cate a order by cateid desc limit 3
+	</select>
+
+	<!-- 收费类型表 按主键(cateid)查询SQL语句 CateDAO通过ID(getCateById)调用此配置  -->
+	<select id="getCateById" parameterType="String" resultMap="cateMap">
+		select a.*  from cate a  where 1=1 and cateid=#{cateid} order by cateid desc
+	</select>
+
+	<!-- 收费类型表 按条件精确查询SQL语句 CateDAO通过ID(getCateByCond)调用此配置  -->
+	<select id="getCateByCond" parameterType="cate" resultMap="cateMap">
+		select a.*  from cate a  where 1=1 
+		<if test="catename != null and '' != catename">
+			and a.catename = #{catename}  
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}  
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}  
+		</if>
+	</select>
+
+	<!-- 收费类型表 按条件模糊查询SQL语句 CateDAO通过ID(getCateByLike)调用此配置  -->
+	<select id="getCateByLike" parameterType="cate" resultMap="cateMap">
+		select a.*  from cate a  where 1=1 
+		<if test="catename != null and '' != catename">
+			and a.catename like CONCAT('%', CONCAT(#{catename}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

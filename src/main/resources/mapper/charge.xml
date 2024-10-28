@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于物业收费表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.boot.dao.ChargeDAO">
+	<resultMap type="charge" id="chargeMap">
+		<id property="chargeid" column="chargeid" />
+		<result property="cno" column="cno" />
+		<result property="buildsid" column="buildsid" />
+		<result property="usersid" column="usersid" />
+		<result property="cateid" column="cateid" />
+		<result property="total" column="total" />
+		<result property="addtime" column="addtime" />
+		<result property="status" column="status" />
+		<result property="memo" column="memo" />
+		<result property="buildsname" column="buildsname" />
+		<result property="address" column="address" />
+		<result property="catename" column="catename" />
+		<!-- 通过外键关联查询  返回封装Builds对象 -->
+		<association property="builds" column="buildsid" select="com.boot.dao.BuildsDAO.getBuildsById" javaType="com.boot.entity.Builds" />
+		<!-- 通过外键关联查询  返回封装Users对象 -->
+		<association property="users" column="usersid" select="com.boot.dao.UsersDAO.getUsersById" javaType="com.boot.entity.Users" />
+		<!-- 通过外键关联查询  返回封装Cate对象 -->
+		<association property="cate" column="cateid" select="com.boot.dao.CateDAO.getCateById" javaType="com.boot.entity.Cate" />
+	</resultMap>
+
+	<!-- 物业收费表 插入SQL语句  ChargeDAO通过ID(insertCharge)调用此配置 -->
+	<insert id="insertCharge" parameterType="charge">  
+		insert into charge(chargeid  , cno  , buildsid  , usersid  , cateid  , total  , addtime  , status  , memo ) values(#{chargeid}  , #{cno}   , #{buildsid}   , #{usersid}   , #{cateid}   , #{total}   , #{addtime}   , #{status}   , #{memo} )
+	</insert>
+
+	<!-- 物业收费表 更新SQL语句  ChargeDAO通过ID(updateCharge)调用此配置 -->
+	<update id="updateCharge" parameterType="charge">
+		update charge set  cno=#{cno}  , buildsid=#{buildsid}  , usersid=#{usersid}  , cateid=#{cateid}  , total=#{total}  , addtime=#{addtime}  , status=#{status}  , memo=#{memo}  where chargeid=#{chargeid}
+	</update>
+
+	<!-- 物业收费表 按主键删除SQL语句  ChargeDAO通过ID(deleteCharge)调用此配置 -->
+	<delete id="deleteCharge" parameterType="String">
+		delete from charge where chargeid = #{chargeid}
+	</delete>
+
+	<!-- 物业收费表 查询全部物业收费信息SQL语句  ChargeDAO通过ID(getAllCharge)调用此配置  -->
+	<select id="getAllCharge" resultMap="chargeMap">
+		select a.* , b.buildsname , c.address , d.catename  from charge a , builds b , users c , cate d  where 1=1 and a.buildsid = b.buildsid and a.usersid = c.usersid and a.cateid = d.cateid  order by chargeid desc
+	</select>
+
+	<!-- 物业收费表 按主键(chargeid)查询SQL语句 ChargeDAO通过ID(getChargeById)调用此配置  -->
+	<select id="getChargeById" parameterType="String" resultMap="chargeMap">
+		select a.* , b.buildsname , c.address , d.catename  from charge a , builds b , users c , cate d  where 1=1 and a.buildsid = b.buildsid and a.usersid = c.usersid and a.cateid = d.cateid and chargeid=#{chargeid} order by chargeid desc
+	</select>
+
+	<!-- 物业收费表 按条件精确查询SQL语句 ChargeDAO通过ID(getChargeByCond)调用此配置  -->
+	<select id="getChargeByCond" parameterType="charge" resultMap="chargeMap">
+		select a.* , b.buildsname , c.address , d.catename  from charge a , builds b , users c , cate d  where 1=1 and a.buildsid = b.buildsid and a.usersid = c.usersid and a.cateid = d.cateid 
+		<if test="cno != null and '' != cno">
+			and a.cno = #{cno}  
+		</if>
+		<if test="buildsid != null and '' != buildsid">
+			and a.buildsid = #{buildsid}  
+		</if>
+		<if test="usersid != null and '' != usersid">
+			and a.usersid = #{usersid}  
+		</if>
+		<if test="cateid != null and '' != cateid">
+			and a.cateid = #{cateid}  
+		</if>
+		<if test="total != null and '' != total">
+			and a.total = #{total}  
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}  
+		</if>
+		<if test="status != null and '' != status">
+			and a.status = #{status}  
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}  
+		</if>
+	</select>
+
+	<!-- 物业收费表 按条件模糊查询SQL语句 ChargeDAO通过ID(getChargeByLike)调用此配置  -->
+	<select id="getChargeByLike" parameterType="charge" resultMap="chargeMap">
+		select a.* , b.buildsname , c.address , d.catename  from charge a , builds b , users c , cate d  where 1=1 and a.buildsid = b.buildsid and a.usersid = c.usersid and a.cateid = d.cateid 
+		<if test="cno != null and '' != cno">
+			and a.cno like CONCAT('%', CONCAT(#{cno}, '%'))
+		</if>
+		<if test="buildsid != null and '' != buildsid">
+			and b.buildsname like CONCAT('%', CONCAT(#{buildsid}, '%'))
+		</if>
+		<if test="usersid != null and '' != usersid">
+			and c.address like CONCAT('%', CONCAT(#{usersid}, '%'))
+		</if>
+		<if test="cateid != null and '' != cateid">
+			and d.catename like CONCAT('%', CONCAT(#{cateid}, '%'))
+		</if>
+		<if test="total != null and '' != total">
+			and a.total like CONCAT('%', CONCAT(#{total}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="status != null and '' != status">
+			and a.status like CONCAT('%', CONCAT(#{status}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于管理员表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.boot.dao.AdminDAO">
+	<resultMap type="admin" id="adminMap">
+		<id property="adminid" column="adminid" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="realname" column="realname" />
+		<result property="contact" column="contact" />
+		<result property="addtime" column="addtime" />
+	</resultMap>
+
+	<!-- 管理员表 插入SQL语句 AdminDAO通过ID(insertAdmin)调用此配置 -->
+	<insert id="insertAdmin" parameterType="admin">
+		insert into admin(adminid , username , password , realname , contact , addtime ) values(#{adminid} , #{username} , #{password} , #{realname} , #{contact} , #{addtime} )
+	</insert>
+
+	<!-- 管理员表 更新SQL语句 AdminDAO通过ID(updateAdmin)调用此配置 -->
+	<update id="updateAdmin" parameterType="admin">
+		update admin set username=#{username} , password=#{password} , realname=#{realname} , contact=#{contact} , addtime=#{addtime}
+		where adminid=#{adminid}
+	</update>
+
+	<!-- 管理员表 按主键删除SQL语句 AdminDAO通过ID(deleteAdmin)调用此配置 -->
+	<delete id="deleteAdmin" parameterType="String">
+		delete from admin where adminid = #{adminid}
+	</delete>
+
+	<!-- 管理员表 查询全部管理员信息SQL语句 AdminDAO通过ID(getAllAdmin)调用此配置 -->
+	<select id="getAllAdmin" resultMap="adminMap">
+		select a.* from admin a where 1=1 order by adminid desc
+	</select>
+
+	<!-- 管理员表 按主键(adminid)查询SQL语句 AdminDAO通过ID(getAdminById)调用此配置 -->
+	<select id="getAdminById" parameterType="String" resultMap="adminMap">
+		select a.* from admin a where 1=1 and adminid=#{adminid} order by adminid desc
+	</select>
+
+	<!-- 管理员表 按条件精确查询SQL语句 AdminDAO通过ID(getAdminByCond)调用此配置 -->
+	<select id="getAdminByCond" parameterType="admin" resultMap="adminMap">
+		select a.* from admin a where 1=1
+		<if test="username != null and '' != username">
+			and a.username = #{username}
+		</if>
+		<if test="password != null and '' != password">
+			and a.password = #{password}
+		</if>
+		<if test="realname != null and '' != realname">
+			and a.realname = #{realname}
+		</if>
+		<if test="contact != null and '' != contact">
+			and a.contact = #{contact}
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}
+		</if>
+	</select>
+
+	<!-- 管理员表 按条件模糊查询SQL语句 AdminDAO通过ID(getAdminByLike)调用此配置 -->
+	<select id="getAdminByLike" parameterType="admin" resultMap="adminMap">
+		select a.* from admin a where 1=1
+		<if test="username != null and '' != username">
+			and a.username like CONCAT('%', CONCAT(#{username}, '%'))
+		</if>
+		<if test="password != null and '' != password">
+			and a.password like CONCAT('%', CONCAT(#{password}, '%'))
+		</if>
+		<if test="realname != null and '' != realname">
+			and a.realname like CONCAT('%', CONCAT(#{realname}, '%'))
+		</if>
+		<if test="contact != null and '' != contact">
+			and a.contact like CONCAT('%', CONCAT(#{contact}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

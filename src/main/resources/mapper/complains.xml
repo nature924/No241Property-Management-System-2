@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于意见反馈表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.boot.dao.ComplainsDAO">
+	<resultMap type="complains" id="complainsMap">
+		<id property="complainsid" column="complainsid" />
+		<result property="usersid" column="usersid" />
+		<result property="title" column="title" />
+		<result property="contents" column="contents" />
+		<result property="addtime" column="addtime" />
+		<result property="status" column="status" />
+		<result property="reps" column="reps" />
+		<result property="username" column="username" />
+		<!-- 通过外键关联查询  返回封装Users对象 -->
+		<association property="users" column="usersid" select="com.boot.dao.UsersDAO.getUsersById" javaType="com.boot.entity.Users" />
+	</resultMap>
+
+	<!-- 意见反馈表 插入SQL语句  ComplainsDAO通过ID(insertComplains)调用此配置 -->
+	<insert id="insertComplains" parameterType="complains">  
+		insert into complains(complainsid  , usersid  , title  , contents  , addtime  , status  , reps ) values(#{complainsid}  , #{usersid}   , #{title}   , #{contents}   , #{addtime}   , #{status}   , #{reps} )
+	</insert>
+
+	<!-- 意见反馈表 更新SQL语句  ComplainsDAO通过ID(updateComplains)调用此配置 -->
+	<update id="updateComplains" parameterType="complains">
+		update complains set  usersid=#{usersid}  , title=#{title}  , contents=#{contents}  , addtime=#{addtime}  , status=#{status}  , reps=#{reps}  where complainsid=#{complainsid}
+	</update>
+
+	<!-- 意见反馈表 按主键删除SQL语句  ComplainsDAO通过ID(deleteComplains)调用此配置 -->
+	<delete id="deleteComplains" parameterType="String">
+		delete from complains where complainsid = #{complainsid}
+	</delete>
+
+	<!-- 意见反馈表 查询全部意见反馈信息SQL语句  ComplainsDAO通过ID(getAllComplains)调用此配置  -->
+	<select id="getAllComplains" resultMap="complainsMap">
+		select a.* , b.username  from complains a , users b  where 1=1 and a.usersid = b.usersid  order by complainsid desc
+	</select>
+
+	<!-- 意见反馈表 按主键(complainsid)查询SQL语句 ComplainsDAO通过ID(getComplainsById)调用此配置  -->
+	<select id="getComplainsById" parameterType="String" resultMap="complainsMap">
+		select a.* , b.username  from complains a , users b  where 1=1 and a.usersid = b.usersid and complainsid=#{complainsid} order by complainsid desc
+	</select>
+
+	<!-- 意见反馈表 按条件精确查询SQL语句 ComplainsDAO通过ID(getComplainsByCond)调用此配置  -->
+	<select id="getComplainsByCond" parameterType="complains" resultMap="complainsMap">
+		select a.* , b.username  from complains a , users b  where 1=1 and a.usersid = b.usersid 
+		<if test="usersid != null and '' != usersid">
+			and a.usersid = #{usersid}  
+		</if>
+		<if test="title != null and '' != title">
+			and a.title = #{title}  
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents = #{contents}  
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}  
+		</if>
+		<if test="status != null and '' != status">
+			and a.status = #{status}  
+		</if>
+		<if test="reps != null and '' != reps">
+			and a.reps = #{reps}  
+		</if>
+	</select>
+
+	<!-- 意见反馈表 按条件模糊查询SQL语句 ComplainsDAO通过ID(getComplainsByLike)调用此配置  -->
+	<select id="getComplainsByLike" parameterType="complains" resultMap="complainsMap">
+		select a.* , b.username  from complains a , users b  where 1=1 and a.usersid = b.usersid 
+		<if test="usersid != null and '' != usersid">
+			and b.username like CONCAT('%', CONCAT(#{usersid}, '%'))
+		</if>
+		<if test="title != null and '' != title">
+			and a.title like CONCAT('%', CONCAT(#{title}, '%'))
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents like CONCAT('%', CONCAT(#{contents}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="status != null and '' != status">
+			and a.status like CONCAT('%', CONCAT(#{status}, '%'))
+		</if>
+		<if test="reps != null and '' != reps">
+			and a.reps like CONCAT('%', CONCAT(#{reps}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

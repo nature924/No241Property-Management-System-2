@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于业主报修表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.boot.dao.RepairDAO">
+	<resultMap type="repair" id="repairMap">
+		<id property="repairid" column="repairid" />
+		<result property="rno" column="rno" />
+		<result property="usersid" column="usersid" />
+		<result property="reason" column="reason" />
+		<result property="contents" column="contents" />
+		<result property="addtime" column="addtime" />
+		<result property="status" column="status" />
+		<result property="employ" column="employ" />
+		<result property="memo" column="memo" />
+		<result property="username" column="username" />
+		<!-- 通过外键关联查询  返回封装Users对象 -->
+		<association property="users" column="usersid" select="com.boot.dao.UsersDAO.getUsersById" javaType="com.boot.entity.Users" />
+	</resultMap>
+
+	<!-- 业主报修表 插入SQL语句  RepairDAO通过ID(insertRepair)调用此配置 -->
+	<insert id="insertRepair" parameterType="repair">  
+		insert into repair(repairid  , rno  , usersid  , reason  , contents  , addtime  , status  , employ  , memo ) values(#{repairid}  , #{rno}   , #{usersid}   , #{reason}   , #{contents}   , #{addtime}   , #{status}   , #{employ}   , #{memo} )
+	</insert>
+
+	<!-- 业主报修表 更新SQL语句  RepairDAO通过ID(updateRepair)调用此配置 -->
+	<update id="updateRepair" parameterType="repair">
+		update repair set  rno=#{rno}  , usersid=#{usersid}  , reason=#{reason}  , contents=#{contents}  , addtime=#{addtime}  , status=#{status}  , employ=#{employ}  , memo=#{memo}  where repairid=#{repairid}
+	</update>
+
+	<!-- 业主报修表 按主键删除SQL语句  RepairDAO通过ID(deleteRepair)调用此配置 -->
+	<delete id="deleteRepair" parameterType="String">
+		delete from repair where repairid = #{repairid}
+	</delete>
+
+	<!-- 业主报修表 查询全部业主报修信息SQL语句  RepairDAO通过ID(getAllRepair)调用此配置  -->
+	<select id="getAllRepair" resultMap="repairMap">
+		select a.* , b.username  from repair a , users b  where 1=1 and a.usersid = b.usersid  order by repairid desc
+	</select>
+
+	<!-- 业主报修表 按主键(repairid)查询SQL语句 RepairDAO通过ID(getRepairById)调用此配置  -->
+	<select id="getRepairById" parameterType="String" resultMap="repairMap">
+		select a.* , b.username  from repair a , users b  where 1=1 and a.usersid = b.usersid and repairid=#{repairid} order by repairid desc
+	</select>
+
+	<!-- 业主报修表 按条件精确查询SQL语句 RepairDAO通过ID(getRepairByCond)调用此配置  -->
+	<select id="getRepairByCond" parameterType="repair" resultMap="repairMap">
+		select a.* , b.username  from repair a , users b  where 1=1 and a.usersid = b.usersid 
+		<if test="rno != null and '' != rno">
+			and a.rno = #{rno}  
+		</if>
+		<if test="usersid != null and '' != usersid">
+			and a.usersid = #{usersid}  
+		</if>
+		<if test="reason != null and '' != reason">
+			and a.reason = #{reason}  
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents = #{contents}  
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}  
+		</if>
+		<if test="status != null and '' != status">
+			and a.status = #{status}  
+		</if>
+		<if test="employ != null and '' != employ">
+			and a.employ = #{employ}  
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}  
+		</if>
+	</select>
+
+	<!-- 业主报修表 按条件模糊查询SQL语句 RepairDAO通过ID(getRepairByLike)调用此配置  -->
+	<select id="getRepairByLike" parameterType="repair" resultMap="repairMap">
+		select a.* , b.username  from repair a , users b  where 1=1 and a.usersid = b.usersid 
+		<if test="rno != null and '' != rno">
+			and a.rno like CONCAT('%', CONCAT(#{rno}, '%'))
+		</if>
+		<if test="usersid != null and '' != usersid">
+			and b.username like CONCAT('%', CONCAT(#{usersid}, '%'))
+		</if>
+		<if test="reason != null and '' != reason">
+			and a.reason like CONCAT('%', CONCAT(#{reason}, '%'))
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents like CONCAT('%', CONCAT(#{contents}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="status != null and '' != status">
+			and a.status like CONCAT('%', CONCAT(#{status}, '%'))
+		</if>
+		<if test="employ != null and '' != employ">
+			and a.employ like CONCAT('%', CONCAT(#{employ}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

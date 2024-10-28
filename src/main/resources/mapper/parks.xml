@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于停车位表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.boot.dao.ParksDAO">
+	<resultMap type="parks" id="parksMap">
+		<id property="parksid" column="parksid" />
+		<result property="pno" column="pno" />
+		<result property="address" column="address" />
+		<result property="square" column="square" />
+		<result property="status" column="status" />
+		<result property="usersid" column="usersid" />
+		<result property="memo" column="memo" />
+		<result property="username" column="username" />
+		<!-- 通过外键关联查询 返回封装Users对象 -->
+		<association property="users" column="usersid" select="com.boot.dao.UsersDAO.getUsersById" javaType="com.boot.entity.Users" />
+	</resultMap>
+
+	<!-- 停车位表 插入SQL语句 ParksDAO通过ID(insertParks)调用此配置 -->
+	<insert id="insertParks" parameterType="parks">
+		insert into parks(parksid , pno , address , square , status , usersid , memo ) values(#{parksid} , #{pno} ,
+		#{address} , #{square} , #{status} , #{usersid} ,
+		#{memo} )
+	</insert>
+
+	<!-- 停车位表 更新SQL语句 ParksDAO通过ID(updateParks)调用此配置 -->
+	<update id="updateParks" parameterType="parks">
+		update parks set pno=#{pno} , address=#{address} , square=#{square} , status=#{status} , usersid=#{usersid} ,
+		memo=#{memo} where parksid=#{parksid}
+	</update>
+
+	<!-- 停车位表 按主键删除SQL语句 ParksDAO通过ID(deleteParks)调用此配置 -->
+	<delete id="deleteParks" parameterType="String">
+		delete from parks where parksid = #{parksid}
+	</delete>
+
+	<!-- 停车位表 查询全部停车位信息SQL语句 ParksDAO通过ID(getAllParks)调用此配置 -->
+	<select id="getAllParks" resultMap="parksMap">
+		select a.* , b.realname as username from parks a LEFT JOIN users b on a.usersid = b.usersid order by parksid desc
+	</select>
+
+	<!-- 停车位表 按主键(parksid)查询SQL语句 ParksDAO通过ID(getParksById)调用此配置 -->
+	<select id="getParksById" parameterType="String" resultMap="parksMap">
+		select a.* , b.realname as username from parks a LEFT JOIN users b on a.usersid = b.usersid
+		where parksid=#{parksid} order by parksid desc
+	</select>
+
+	<!-- 停车位表 按条件精确查询SQL语句 ParksDAO通过ID(getParksByCond)调用此配置 -->
+	<select id="getParksByCond" parameterType="parks" resultMap="parksMap">
+		select a.* , b.realname as username from parks a LEFT JOIN users b on a.usersid = b.usersid where a.usersid = b.usersid
+		<if test="pno != null and '' != pno">
+			and a.pno = #{pno}
+		</if>
+		<if test="address != null and '' != address">
+			and a.address = #{address}
+		</if>
+		<if test="square != null and '' != square">
+			and a.square = #{square}
+		</if>
+		<if test="status != null and '' != status">
+			and a.status = #{status}
+		</if>
+		<if test="usersid != null and '' != usersid">
+			and a.usersid = #{usersid}
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}
+		</if>
+	</select>
+
+	<!-- 停车位表 按条件模糊查询SQL语句 ParksDAO通过ID(getParksByLike)调用此配置 -->
+	<select id="getParksByLike" parameterType="parks" resultMap="parksMap">
+		select a.* , b.realname as username from parks a LEFT JOIN users b on a.usersid = b.usersid where a.usersid = b.usersid
+		<if test="pno != null and '' != pno">
+			and a.pno like CONCAT('%', CONCAT(#{pno}, '%'))
+		</if>
+		<if test="address != null and '' != address">
+			and a.address like CONCAT('%', CONCAT(#{address}, '%'))
+		</if>
+		<if test="square != null and '' != square">
+			and a.square like CONCAT('%', CONCAT(#{square}, '%'))
+		</if>
+		<if test="status != null and '' != status">
+			and a.status like CONCAT('%', CONCAT(#{status}, '%'))
+		</if>
+		<if test="usersid != null and '' != usersid">
+			and b.realname like CONCAT('%', CONCAT(#{usersid}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

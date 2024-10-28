@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于网站栏目表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.boot.dao.BannerDAO">
+	<resultMap type="banner" id="bannerMap">
+		<id property="bannerid" column="bannerid" />
+		<result property="bannername" column="bannername" />
+		<result property="addtime" column="addtime" />
+		<result property="memo" column="memo" />
+	</resultMap>
+
+	<!-- 网站栏目表 插入SQL语句 BannerDAO通过ID(insertBanner)调用此配置 -->
+	<insert id="insertBanner" parameterType="banner">
+		insert into banner(bannerid , bannername , addtime , memo ) values(#{bannerid} , #{bannername} , #{addtime} , #{memo} )
+	</insert>
+
+	<!-- 网站栏目表 更新SQL语句 BannerDAO通过ID(updateBanner)调用此配置 -->
+	<update id="updateBanner" parameterType="banner">
+		update banner set bannername=#{bannername} , addtime=#{addtime} , memo=#{memo} where bannerid=#{bannerid}
+	</update>
+
+	<!-- 网站栏目表 按主键删除SQL语句 BannerDAO通过ID(deleteBanner)调用此配置 -->
+	<delete id="deleteBanner" parameterType="String">
+		delete from banner where bannerid = #{bannerid}
+	</delete>
+
+	<!-- 网站栏目表 查询全部网站栏目信息SQL语句 BannerDAO通过ID(getAllBanner)调用此配置 -->
+	<select id="getAllBanner" resultMap="bannerMap">
+		select a.* from banner a order by bannerid asc
+	</select>
+
+	<!-- 网站栏目表 按主键(bannerid)查询SQL语句 BannerDAO通过ID(getBannerById)调用此配置 -->
+	<select id="getBannerById" parameterType="String" resultMap="bannerMap">
+		select a.* from banner a where 1=1 and bannerid=#{bannerid} order by bannerid desc
+	</select>
+
+	<!-- 网站栏目表 按条件精确查询SQL语句 BannerDAO通过ID(getBannerByCond)调用此配置 -->
+	<select id="getBannerByCond" parameterType="banner" resultMap="bannerMap">
+		select a.* from banner a where 1=1
+		<if test="bannername != null and '' != bannername">
+			and a.bannername = #{bannername}
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}
+		</if>
+	</select>
+
+	<!-- 网站栏目表 按条件模糊查询SQL语句 BannerDAO通过ID(getBannerByLike)调用此配置 -->
+	<select id="getBannerByLike" parameterType="banner" resultMap="bannerMap">
+		select a.* from banner a where 1=1
+		<if test="bannername != null and '' != bannername">
+			and a.bannername like CONCAT('%', CONCAT(#{bannername}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
